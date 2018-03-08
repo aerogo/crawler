@@ -13,10 +13,10 @@ import (
 
 // Crawler ...
 type Crawler struct {
-	userAgent string
-	ticker    *time.Ticker
-	tasks     chan *Task
-	wg        *sync.WaitGroup
+	headers client.Headers
+	ticker  *time.Ticker
+	tasks   chan *Task
+	wg      *sync.WaitGroup
 }
 
 // Task ...
@@ -38,7 +38,7 @@ func (crawler *Crawler) Wait() {
 
 // Download page contents to file
 func (crawler *Crawler) work(task *Task) {
-	response, err := client.Get(task.URL).Header("User-Agent", crawler.userAgent).End()
+	response, err := client.Get(task.URL).Headers(crawler.headers).End()
 
 	if err != nil {
 		fmt.Println(color.RedString(task.URL), err)
@@ -56,12 +56,12 @@ func (crawler *Crawler) work(task *Task) {
 }
 
 // New ...
-func New(userAgent string, delayBetweenRequests time.Duration, tasksBufferLength int) *Crawler {
+func New(headers client.Headers, delayBetweenRequests time.Duration, tasksBufferLength int) *Crawler {
 	crawl := &Crawler{
-		userAgent: userAgent,
-		ticker:    time.NewTicker(delayBetweenRequests),
-		tasks:     make(chan *Task, tasksBufferLength),
-		wg:        &sync.WaitGroup{},
+		headers: headers,
+		ticker:  time.NewTicker(delayBetweenRequests),
+		tasks:   make(chan *Task, tasksBufferLength),
+		wg:      &sync.WaitGroup{},
 	}
 
 	go func() {
