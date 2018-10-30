@@ -23,6 +23,7 @@ type Crawler struct {
 type Task struct {
 	URL         string
 	Destination string
+	Raw         bool
 }
 
 // Queue queues up a task.
@@ -36,7 +37,7 @@ func (crawler *Crawler) Wait() {
 	crawler.wg.Wait()
 }
 
-// Download page contents to file
+// Download page contents to file.
 func (crawler *Crawler) work(task *Task) {
 	response, err := client.Get(task.URL).Headers(crawler.headers).End()
 
@@ -50,7 +51,14 @@ func (crawler *Crawler) work(task *Task) {
 		return
 	}
 
-	data := response.Bytes()
+	var data []byte
+
+	if task.Raw {
+		data = response.RawBytes()
+	} else {
+		data = response.Bytes()
+	}
+
 	fmt.Println(color.GreenString(task.URL), len(data), "bytes")
 	ioutil.WriteFile(task.Destination, data, 0644)
 }
