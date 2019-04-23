@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/aerogo/http/client"
-	"github.com/blitzprog/color"
+	"github.com/akyoto/color"
 )
 
 // Crawler ...
