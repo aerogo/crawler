@@ -3,7 +3,7 @@ module github.com/aerogo/crawler
 go 1.12
 
 require (
-	github.com/aerogo/http v1.0.0
+	github.com/aerogo/http v1.0.1
 	github.com/akyoto/color v1.8.1
 	golang.org/x/sys v0.0.0-20190426135247-a129542de9ae // indirect
 )
