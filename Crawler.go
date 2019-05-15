@@ -54,7 +54,7 @@ func (crawler *Crawler) work(task *Task) {
 	var data []byte
 
 	if task.Raw {
-		data = response.RawBytes()
+		data = response.Raw()
 	} else {
 		data = response.Bytes()
 	}
