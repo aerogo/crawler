@@ -1,6 +1,7 @@
 package crawler
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -27,9 +28,18 @@ type Task struct {
 }
 
 // Queue queues up a task.
-func (crawler *Crawler) Queue(task *Task) {
+func (crawler *Crawler) Queue(task *Task) error {
+	if task.URL == "" {
+		return errors.New("Task is missing a URL")
+	}
+
+	if task.Destination == "" {
+		return fmt.Errorf("Task '%s' is missing a destination", task.URL)
+	}
+
 	crawler.wg.Add(1)
 	crawler.tasks <- task
+	return nil
 }
 
 // Wait waits until all tasks have been completed.
