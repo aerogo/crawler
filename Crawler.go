@@ -11,7 +11,7 @@ import (
 	"github.com/akyoto/color"
 )
 
-// Crawler ...
+// Crawler is a web crawler that accepts URLs and tries to fetch them.
 type Crawler struct {
 	headers client.Headers
 	ticker  *time.Ticker
@@ -19,7 +19,7 @@ type Crawler struct {
 	wg      *sync.WaitGroup
 }
 
-// Task ...
+// Task represents a single URL fetch task.
 type Task struct {
 	URL         string
 	Destination string
@@ -60,10 +60,15 @@ func (crawler *Crawler) work(task *Task) {
 	}
 
 	fmt.Println(color.GreenString(task.URL), len(data), "bytes")
-	ioutil.WriteFile(task.Destination, data, 0644)
+	err = ioutil.WriteFile(task.Destination, data, 0644)
+
+	if err != nil {
+		fmt.Println(color.RedString(task.URL), err)
+		return
+	}
 }
 
-// New ...
+// New creates a new crawler.
 func New(headers client.Headers, delayBetweenRequests time.Duration, tasksBufferLength int) *Crawler {
 	crawl := &Crawler{
 		headers: headers,
